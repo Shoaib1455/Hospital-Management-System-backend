@@ -1,0 +1,10 @@
+<Solution>
+  <Project Path="AppointmentService/AppointmentService.csproj" Id="fc5f9f08-5a48-4c06-93a0-154b9f5c3a9f" />
+  <Project Path="BillService/BillService.csproj" Id="020ae8e9-1dc2-4b56-a479-f6b8879d2271" />
+  <Project Path="D:/Hospital_Management_System/EmergencyAlertService/EmergencyAlertService.csproj" />
+  <Project Path="D:/Hospital_Management_System/IdentityService/IdentityService.csproj" Id="ee35da8a-df89-4881-a390-18a510166172" />
+  <Project Path="D:/Hospital_Management_System/LabService/LabService.csproj" />
+  <Project Path="D:/Hospital_Management_System/NotificationService/NotificationService.csproj" />
+  <Project Path="D:/Hospital_Management_System/PatientService/PatientService.csproj" Id="f378dcb9-0374-46e7-8246-9cf45369d636" />
+  <Project Path="DoctorService/DoctorService.csproj" Id="8bd7295a-9a98-496d-80b7-c1e41d48ebca" />
+</Solution>
