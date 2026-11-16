@@ -31,15 +31,15 @@ namespace AppointmentService.Repositories
             return await _context.Appointments.ToListAsync();
         }
 
-        public async Task<bool> IsSlotBooked(Guid doctorId,
+        public async Task<bool> IsSlotBooked(Guid Doctorid,
                                              DateOnly date,
                                              TimeOnly time)
         {
             return await _context.Appointments.AnyAsync(x =>
-                x.DoctorId == doctorId &&
-                x.AppointmentDate == date &&
-                x.AppointmentTime == time &&
-                x.Status != AppointmentStatus.Cancelled);
+                x.Doctorid == Doctorid &&
+                x.Appointmentdate == date &&
+                x.Appointmenttime == time &&
+                x.Status != AppointmentStatus.Cancelled.ToString());
         }
 
         public async Task UpdateAsync(Appointment appointment)

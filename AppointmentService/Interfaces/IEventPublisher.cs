@@ -2,6 +2,6 @@
 {
     public interface IEventPublisher
     {
-        Task PublishAsync<T>(string routingKey, T message);
+       public Task PublishAsync<T>(string routingKey, T message);
     }
 }

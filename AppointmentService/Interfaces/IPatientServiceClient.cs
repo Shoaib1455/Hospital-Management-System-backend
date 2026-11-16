@@ -2,6 +2,6 @@
 {
     public interface IPatientServiceClient
     {
-        Task<bool> PatientExistsAsync(Guid patientId);
+        Task<bool> PatientExistsAsync(Guid Patientid);
     }
 }

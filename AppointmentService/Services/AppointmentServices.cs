@@ -5,13 +5,13 @@ using AppointmentService.Models;
 
 namespace AppointmentService.Services
 {
-    public class AppointmentService:IAppointmentService
+    public class AppointmentServices:IAppointmentService
     {
         private readonly IAppointmentRepository _repository;
         private readonly IPatientServiceClient _patientClient;
         private readonly IDoctorServiceClient _doctorClient;
         private readonly IEventPublisher _publisher;
-        public AppointmentService(
+        public AppointmentServices(
         IAppointmentRepository repository,
         IPatientServiceClient patientClient,
         IDoctorServiceClient doctorClient,
@@ -27,14 +27,14 @@ namespace AppointmentService.Services
         {
             // Verify patient exists
             var patientExists =
-                await _patientClient.PatientExistsAsync(dto.PatientId);
+                await _patientClient.PatientExistsAsync(dto.Patientid);
 
             if (!patientExists)
                 throw new Exception("Patient not found.");
 
             // Verify doctor exists
             var doctor =
-                await _doctorClient.GetDoctorAsync(dto.DoctorId);
+                await _doctorClient.GetDoctorAsync(dto.Doctorid);
 
             if (doctor == null)
                 throw new Exception("Doctor not found.");
@@ -42,9 +42,9 @@ namespace AppointmentService.Services
             // Verify doctor is available
             var slotBooked =
                 await _repository.IsSlotBooked(
-                    dto.DoctorId,
-                    dto.AppointmentDate,
-                    dto.AppointmentTime);
+                    dto.Doctorid,
+                    dto.Appointmentdate,
+                    dto.Appointmenttime);
 
             if (slotBooked)
                 throw new Exception("Slot already booked.");
@@ -52,32 +52,33 @@ namespace AppointmentService.Services
             var appointment = new Appointment
             {
                 Id = Guid.NewGuid(),
-                PatientId = dto.PatientId,
-                DoctorId = dto.DoctorId,
-                AppointmentDate = dto.AppointmentDate,
-                AppointmentTime = dto.AppointmentTime,
-                Status = AppointmentStatus.PendingPayment
+                Patientid = dto.Patientid,
+                Doctorid = dto.Doctorid,
+                Appointmentdate = dto.Appointmentdate,
+                Appointmenttime = dto.Appointmenttime,
+                Status = AppointmentStatus.PendingPayment.ToString()
             };
 
             await _repository.AddAsync(appointment);
 
-            await _publisher.PublishAsync("appointment.created",new AppointmentCreatedEvent
+            await _publisher.PublishAsync("appointment.created", new AppointmentCreatedEvent
             {
                 AppointmentId = appointment.Id,
-                PatientId = appointment.PatientId,
-                DoctorId = appointment.DoctorId,
-                AppointmentDate = appointment.AppointmentDate,
-                AppointmentTime = appointment.AppointmentTime,
-                ConsultationFee = doctor.ConsultationFee
+                Patientid = appointment.Patientid,
+                Doctorid = appointment.Doctorid,
+                Appointmentdate = appointment.Appointmentdate,
+                Appointmenttime = appointment.Appointmenttime,
+                ConsultationFee = doctor.ConsultationFee,
+                Amount = doctor.ConsultationFee
             });
 
             return new AppointmentDto
             {
                 Id = appointment.Id,
-                PatientId = appointment.PatientId,
-                DoctorId = appointment.DoctorId,
-                AppointmentDate = appointment.AppointmentDate,
-                AppointmentTime = appointment.AppointmentTime,
+                Patientid = appointment.Patientid,
+                Doctorid = appointment.Doctorid,
+                Appointmentdate = appointment.Appointmentdate,
+                Appointmenttime = appointment.Appointmenttime,
                 Status = appointment.Status
             };
         }
@@ -88,11 +89,11 @@ namespace AppointmentService.Services
             return appointments.Select(a => new AppointmentDto
             {
                 Id = a.Id,
-                PatientId = a.PatientId,
-                DoctorId = a.DoctorId,
-                AppointmentDate = a.AppointmentDate,
+                Patientid = a.Patientid,
+                Doctorid = a.Doctorid,
+                Appointmentdate = a.Appointmentdate,
                 Status = a.Status,
-                CreatedAt = a.CreatedAt
+                CreatedAt = a.Createdat
             }).ToList();
         }
         public async Task<AppointmentDto?> GetByIdAsync(Guid id)
@@ -105,11 +106,11 @@ namespace AppointmentService.Services
             return new AppointmentDto
             {
                 Id = appointment.Id,
-                PatientId = appointment.PatientId,
-                DoctorId = appointment.DoctorId,
-                AppointmentDate = appointment.AppointmentDate,
+                Patientid = appointment.Patientid,
+                Doctorid = appointment.Doctorid,
+                Appointmentdate = appointment.Appointmentdate,
                 Status = appointment.Status,
-                CreatedAt = appointment.CreatedAt
+                CreatedAt = appointment.Createdat
             };
         }
         public async Task CancelAsync(Guid id)
@@ -119,7 +120,7 @@ namespace AppointmentService.Services
             if (appointment == null)
                 throw new Exception("Appointment not found.");
 
-            appointment.Status = AppointmentStatus.Cancelled;
+            appointment.Status = AppointmentStatus.Cancelled.ToString();
 
             await _repository.UpdateAsync(appointment);
         }

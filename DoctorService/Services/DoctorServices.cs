@@ -5,11 +5,11 @@ using System.Numerics;
 
 namespace DoctorService.Services
 {
-    public class DoctorService:IDoctorService
+    public class DoctorServices:IDoctorService
     {
         private readonly IDoctorRepository _repository;
 
-        public DoctorService(IDoctorRepository repository)
+        public DoctorServices(IDoctorRepository repository)
         {
             _repository = repository;
         }

@@ -2,12 +2,12 @@
 {
     public class CreateAppointmentDto
     {
-        public Guid PatientId { get; set; }
+        public Guid Patientid { get; set; }
 
-        public Guid DoctorId { get; set; }
+        public Guid Doctorid { get; set; }
 
-        public DateOnly AppointmentDate { get; set; }
+        public DateOnly Appointmentdate { get; set; }
 
-        public TimeOnly AppointmentTime { get; set; }
+        public TimeOnly Appointmenttime { get; set; }
     }
 }

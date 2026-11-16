@@ -1,27 +1,24 @@
 using DoctorService.Data;
 using DoctorService.Interfaces;
-using DoctorService.Services;
+using DoctorService.Messaging;
 using DoctorService.Repositories;
+using DoctorService.Services;
 using Microsoft.EntityFrameworkCore;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddDbContext<DoctorDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DoctorDb")));
-
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
-//builder.Services.AddScoped<IDoctorService, DoctorServices>();
+builder.Services.AddScoped<IDoctorService, DoctorServices>();
+builder.Services.AddSingleton<ReceivedAppointmentStore>();
+builder.Services.AddHostedService<AppointmentCreatedConsumer>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -30,11 +27,11 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
     });
 }
-
-app.UseHttpsRedirection();
+else
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

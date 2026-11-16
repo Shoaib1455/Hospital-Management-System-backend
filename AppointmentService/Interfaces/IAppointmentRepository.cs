@@ -10,7 +10,7 @@ namespace AppointmentService.Interfaces
 
         Task<List<Appointment>> GetAllAsync();
 
-        Task<bool> IsSlotBooked(Guid doctorId,
+        Task<bool> IsSlotBooked(Guid Doctorid,
                                 DateOnly date,
                                 TimeOnly time);
 

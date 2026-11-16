@@ -4,11 +4,11 @@ using PatientService.Models;
 
 namespace PatientService.Services
 {
-    public class PatientService:IPatientService
+    public class PatientServices:IPatientService
     {
         private readonly IPatientRepository _repository;
 
-        public PatientService(IPatientRepository repository)
+        public PatientServices(IPatientRepository repository)
         {
             _repository = repository;
         }
@@ -22,7 +22,8 @@ namespace PatientService.Services
                 LastName = dto.LastName,
                 Phone = dto.Phone,
                 Gender = dto.Gender,
-                DateOfBirth = dto.DateOfBirth
+                DateOfBirth = dto.DateOfBirth,
+                Address=dto.Address
             };
 
             await _repository.AddAsync(patient);
