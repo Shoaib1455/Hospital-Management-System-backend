@@ -31,6 +31,20 @@ namespace AppointmentService.Controllers
             return Ok(await _service.GetAllAsync());
         }
 
+        [HttpGet("doctor/{doctorId:guid}")]
+        public async Task<IActionResult> GetForDoctor(Guid doctorId) => Ok(await _service.GetByDoctorAsync(doctorId));
+
+        [HttpGet("patient/{patientId:guid}")]
+        public async Task<IActionResult> GetForPatient(Guid patientId) => Ok(await _service.GetByPatientAsync(patientId));
+
+        [HttpGet("slots")]
+        public async Task<IActionResult> GetAvailableSlots([FromQuery] Guid doctorId, [FromQuery] DateOnly date)
+        {
+            if (doctorId == Guid.Empty) return BadRequest("doctorId is required.");
+            try { return Ok(await _service.GetAvailableSlotsAsync(doctorId, date)); }
+            catch (Exception ex) when (ex.Message == "Doctor not found.") { return NotFound(ex.Message); }
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {

@@ -1,5 +1,8 @@
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpClient("patient-service", client =>
+    client.BaseAddress = new Uri(builder.Configuration["Services:PatientService"] ?? "http://localhost:5225/"));
+
 // Add services to the container.
 
 builder.Services.AddControllers();

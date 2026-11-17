@@ -28,8 +28,14 @@ namespace AppointmentService.Repositories
 
         public async Task<List<Appointment>> GetAllAsync()
         {
-            return await _context.Appointments.ToListAsync();
+            return await _context.Appointments.OrderBy(x => x.Appointmentdate).ThenBy(x => x.Appointmenttime).ToListAsync();
         }
+
+        public Task<List<Appointment>> GetByDoctorAsync(Guid doctorId) => _context.Appointments
+            .Where(x => x.Doctorid == doctorId).OrderBy(x => x.Appointmentdate).ThenBy(x => x.Appointmenttime).ToListAsync();
+
+        public Task<List<Appointment>> GetByPatientAsync(Guid patientId) => _context.Appointments
+            .Where(x => x.Patientid == patientId).OrderByDescending(x => x.Appointmentdate).ThenByDescending(x => x.Appointmenttime).ToListAsync();
 
         public async Task<bool> IsSlotBooked(Guid Doctorid,
                                              DateOnly date,

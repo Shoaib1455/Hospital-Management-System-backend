@@ -9,7 +9,6 @@
         public Guid Doctorid { get; set; }
 
         public DateOnly Appointmentdate { get; set; }
-
         public TimeOnly Appointmenttime { get; set; }
 
         public string Status { get; set; } = string.Empty;

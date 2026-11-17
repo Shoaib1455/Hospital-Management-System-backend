@@ -7,6 +7,7 @@ namespace AppointmentService.Services
 {
     public class AppointmentServices:IAppointmentService
     {
+        private static readonly TimeSpan SlotLength = TimeSpan.FromMinutes(30);
         private readonly IAppointmentRepository _repository;
         private readonly IPatientServiceClient _patientClient;
         private readonly IDoctorServiceClient _doctorClient;
@@ -38,6 +39,12 @@ namespace AppointmentService.Services
 
             if (doctor == null)
                 throw new Exception("Doctor not found.");
+
+            var startOffset = dto.Appointmenttime.ToTimeSpan() - doctor.StartTime.ToTimeSpan();
+            if (dto.Appointmenttime < doctor.StartTime || dto.Appointmenttime >= doctor.EndTime ||
+                startOffset.Ticks < 0 || startOffset.Ticks % SlotLength.Ticks != 0 ||
+                dto.Appointmenttime.ToTimeSpan() + SlotLength > doctor.EndTime.ToTimeSpan())
+                throw new Exception("Appointment time must be a valid 30-minute slot within the doctor's working hours.");
 
             // Verify doctor is available
             var slotBooked =
@@ -86,16 +93,27 @@ namespace AppointmentService.Services
         {
             var appointments = await _repository.GetAllAsync();
 
-            return appointments.Select(a => new AppointmentDto
-            {
-                Id = a.Id,
-                Patientid = a.Patientid,
-                Doctorid = a.Doctorid,
-                Appointmentdate = a.Appointmentdate,
-                Status = a.Status,
-                CreatedAt = a.Createdat
-            }).ToList();
+            return appointments.Select(ToDto).ToList();
         }
+        public async Task<List<AppointmentDto>> GetByDoctorAsync(Guid doctorId) => (await _repository.GetByDoctorAsync(doctorId)).Select(ToDto).ToList();
+        public async Task<List<AppointmentDto>> GetByPatientAsync(Guid patientId) => (await _repository.GetByPatientAsync(patientId)).Select(ToDto).ToList();
+        public async Task<List<TimeOnly>> GetAvailableSlotsAsync(Guid doctorId, DateOnly date)
+        {
+            var doctor = await _doctorClient.GetDoctorAsync(doctorId);
+            if (doctor == null) throw new Exception("Doctor not found.");
+            var booked = (await _repository.GetAllAsync()).Where(a => a.Doctorid == doctorId && a.Appointmentdate == date && a.Status != AppointmentStatus.Cancelled.ToString())
+                .Select(a => a.Appointmenttime).ToHashSet();
+            var result = new List<TimeOnly>();
+            for (var time = doctor.StartTime; time.ToTimeSpan() + SlotLength <= doctor.EndTime.ToTimeSpan(); time = time.AddMinutes((int)SlotLength.TotalMinutes))
+                if (!booked.Contains(time)) result.Add(time);
+            return result;
+        }
+        private static AppointmentDto ToDto(Appointment a) => new()
+        {
+            Id = a.Id, Patientid = a.Patientid, Doctorid = a.Doctorid,
+            Appointmentdate = a.Appointmentdate, Appointmenttime = a.Appointmenttime,
+            Status = a.Status, CreatedAt = a.Createdat
+        };
         public async Task<AppointmentDto?> GetByIdAsync(Guid id)
         {
             var appointment = await _repository.GetByIdAsync(id);
