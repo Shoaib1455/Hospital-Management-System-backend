@@ -2,7 +2,7 @@
 {
     public class PatientDto
     {
-        public string PatientId { get; set; }
+        public string Patientid { get; set; }
         public Guid Id { get; set; }
 
         public string FirstName { get; set; } = string.Empty;

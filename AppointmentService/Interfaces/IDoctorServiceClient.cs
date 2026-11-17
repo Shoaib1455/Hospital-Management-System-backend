@@ -4,8 +4,8 @@ namespace AppointmentService.Interfaces
 {
     public interface IDoctorServiceClient
     {
-        Task<bool> DoctorExistsAsync(Guid doctorId);
+        Task<bool> DoctorExistsAsync(Guid Doctorid);
 
-        Task<DoctorResponseDto?> GetDoctorAsync(Guid doctorId);
+        Task<DoctorResponseDto?> GetDoctorAsync(Guid Doctorid);
     }
 }

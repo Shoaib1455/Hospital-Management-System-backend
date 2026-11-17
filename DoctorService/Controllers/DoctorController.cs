@@ -9,10 +9,22 @@ namespace DoctorService.Controllers
     public class DoctorController : Controller
     {
         private readonly IDoctorService _doctorService;
+        private readonly IHttpClientFactory _clients;
         
-            public DoctorController(IDoctorService doctorService)
+            public DoctorController(IDoctorService doctorService, IHttpClientFactory clients)
             {
                 _doctorService = doctorService;
+                _clients = clients;
+            }
+
+            [HttpGet("{id:guid}/appointments")]
+            public async Task<IActionResult> GetAppointments(Guid id, CancellationToken cancellationToken)
+            {
+                if (await _doctorService.GetByIdAsync(id) == null) return NotFound("Doctor not found.");
+                var response = await _clients.CreateClient("appointment-service")
+                    .GetAsync($"api/appointments/doctor/{id}", cancellationToken);
+                var content = await response.Content.ReadAsStringAsync(cancellationToken);
+                return new ContentResult { StatusCode = (int)response.StatusCode, Content = content, ContentType = "application/json" };
             }
 
             [HttpPost]

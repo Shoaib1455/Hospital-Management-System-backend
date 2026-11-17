@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PatientService.Data;
+using PatientService.Interfaces;
 using PatientService.Models;
 
 namespace PatientService.Repositories
 {
-    public class PatientRepository
+    public class PatientRepository:IPatientRepository
     {
         private readonly PatientDbContext _context;
 

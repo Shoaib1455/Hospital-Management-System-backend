@@ -1,18 +1,23 @@
-﻿namespace AppointmentService.Models
+﻿using System;
+using System.Collections.Generic;
+
+namespace AppointmentService.Models;
+
+public partial class Appointment
 {
-    public class Appointment
-    {
-        public Guid Id { get; set; }
+    public Guid Id { get; set; }
 
-        public Guid PatientId { get; set; }
+    public Guid Patientid { get; set; }
 
-        public Guid DoctorId { get; set; }
+    public Guid Doctorid { get; set; }
 
-        public DateOnly AppointmentDate { get; set; }
+    public DateOnly Appointmentdate { get; set; }
 
-        public TimeOnly AppointmentTime { get; set; }
+    public TimeOnly Appointmenttime { get; set; }
 
-        public AppointmentStatus Status { get; set; }
-        public DateTime CreatedAt { get; set; }
-    }
+    public string Status { get; set; } = null!;
+
+    public DateTime Createdat { get; set; }
+
+    public DateTime? Updatedat { get; set; }
 }

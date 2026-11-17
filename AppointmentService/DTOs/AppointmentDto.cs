@@ -4,15 +4,14 @@
     {
         public Guid Id { get; set; }
 
-        public Guid PatientId { get; set; }
+        public Guid Patientid { get; set; }
 
-        public Guid DoctorId { get; set; }
+        public Guid Doctorid { get; set; }
 
-        public DateOnly AppointmentDate { get; set; }
+        public DateOnly Appointmentdate { get; set; }
+        public TimeOnly Appointmenttime { get; set; }
 
-        public TimeOnly AppointmentTime { get; set; }
-
-        public AppointmentStatus Status { get; set; }
+        public string Status { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
     }
 }
